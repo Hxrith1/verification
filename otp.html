@@ -9,12 +9,31 @@
 <body>
     <div class="otp-container">
         <h2>Enter OTP Code</h2>
-        <p>Please enter the OTP sent to your phone number.</p>
-        <form id="otp-form">
-            <input type="text" id="otp-code" placeholder="OTP Code" required>
+        <p>Please enter the OTP code.</p>
+        <form id="otpForm">
+            <input type="text" id="otp" placeholder="OTP Code" required>
             <button type="submit">Submit</button>
         </form>
     </div>
-    <script src="script.js"></script> 
+    <script>
+        document.getElementById('otpForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const otp = document.getElementById('otp').value;
+
+            fetch('/verifyOTP', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ otp })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
 </body>
 </html>
+

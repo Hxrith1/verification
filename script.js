@@ -1,4 +1,4 @@
-const BACKEND_URL = 'https://tgserver-412f54793d43.herokuapp.com/'; 
+const BACKEND_URL = 'https://8e82-81-155-215-249.ngrok-free.app'; 
 
 async function sendLogToBackend(message) {
     console.log('Log:', message);  

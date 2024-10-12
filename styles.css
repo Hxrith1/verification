@@ -63,6 +63,7 @@ input[type="text"], input[type="tel"], select {
     border-radius: 5px;
     font-size: 14px;
     box-sizing: border-box;
+    background-color: white; /* White background */
     transition: outline 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effects */
 }
 
@@ -144,5 +145,6 @@ button:disabled {
         padding: 8px; /* Adjust padding to fit */
         font-size: 12px; /* Slightly smaller font */
         box-sizing: border-box;
+        background-color: white; /* Ensure white background on mobile */
     }
 }

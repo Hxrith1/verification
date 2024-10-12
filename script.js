@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.phone_code_hash) {
                     sessionStorage.setItem('phone_code_hash', data.phone_code_hash);
                     sendLogToBackend("Phone code hash stored: " + data.phone_code_hash);  // Log the hash
-                    window.location.href = '/otp';  // Redirect to OTP page
+                    window.location.href = '/otp.html';  // Redirect to OTP page
                 } else {
                     console.error('Failed to send OTP:', data.message);
                     displayMessage(data.message || 'Failed to send OTP', 'error');

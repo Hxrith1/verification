@@ -135,6 +135,7 @@ body.night-mode select:hover {
 /* Button Styling */
 button {
     width: 100%;
+    height: 50.3px; /* Match input height */
     padding: 12px;
     background-color: #3C87F7; /* Updated button color for light mode */
     color: white;

@@ -1,14 +1,24 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@400;500;700&display=swap');
+
 /* General Body Styling */
 body {
     background-color: #f7f7f7;
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Prevent scrollbar during transition */
+    overflow: hidden;
+    color: #333;
+}
+
+/* Night mode styles */
+body.night-mode {
+    background-color: #333;
+    color: #f7f7f7;
 }
 
 /* Container Styling */
@@ -19,7 +29,12 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     text-align: center;
     width: 300px;
-    transition: transform 0.6s ease-out; /* Add smooth transition for swipe effect */
+    transition: transform 0.6s ease-out, opacity 0.5s ease-in-out;
+}
+
+body.night-mode .login-container,
+body.night-mode .otp-container {
+    background-color: #444; /* Darker background for night mode */
 }
 
 .logo {
@@ -27,9 +42,21 @@ body {
     margin-bottom: 20px;
 }
 
+/* Ensure specific headings remain black */
+.title {
+    color: black;
+}
+
+/* Headings with bold font */
 h2 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
     margin-bottom: 10px;
     font-size: 22px;
+}
+
+body.night-mode h2 {
+    color: #00bcd4; /* Change heading color in night mode */
 }
 
 /* Form Styling */
@@ -39,62 +66,97 @@ form {
 
 .input-container {
     position: relative;
-    margin-bottom: 20px; /* Spacing between input fields */
+    margin-bottom: 20px;
 }
 
-/* Updated label styling to be embedded in the input */
 .input-label {
     position: absolute;
-    top: -8px; /* Adjusted to align with the input */
-    left: 15px; /* Move label slightly to the right */
-    background-color: white; /* White background for label */
-    padding: 0 5px; /* Small padding to enhance readability */
+    top: -8px;
+    left: 15px;
+    background-color: white;
+    padding: 0 5px;
+    font-family: 'Open Sans', sans-serif;
     font-size: 12px;
-    color: #666; /* Darker gray for label text */
-    transition: 0.2s ease all; /* Smooth transition */
+    color: #666;
+    transition: 0.2s ease all;
 }
 
-/* Updated dimensions for input boxes */
+body.night-mode .input-label {
+    background-color: #444; /* Darker background for labels in night mode */
+    color: #bbb; /* Lighter label text color */
+}
+
 input[type="text"], input[type="tel"], select {
-    width: 273.33px; /* Updated width */
-    height: 50.3px; /* Updated height */
-    padding: 10px; /* Padding for the input to align with label */
-    border: 1px solid #ccc;
+    width: 273.33px;
+    height: 50.3px;
+    padding: 10px;
+    border: 1px solid #3C87F7; /* Updated border color for light mode */
     border-radius: 5px;
+    font-family: 'Open Sans', sans-serif;
     font-size: 14px;
     box-sizing: border-box;
-    background-color: white; /* White background */
-    transition: outline 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effects */
+    background-color: white;
+    color: #333;
+    transition: outline 0.3s ease, box-shadow 0.3s ease;
 }
 
+body.night-mode input[type="text"],
+body.night-mode input[type="tel"],
+body.night-mode select {
+    background-color: #555; /* Dark background for inputs in night mode */
+    color: #f7f7f7; /* Light text color for inputs */
+}
+
+/* Highlighting inputs on focus */
 input:focus, select:focus {
-    border-color: #007bb5;
+    border-color: #3C87F7; /* Updated focus border color for light mode */
     outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+    box-shadow: 0 0 5px rgba(60, 135, 247, 0.5); /* Optional: matching shadow color */
 }
 
-/* Hover Effect with Subtle Fade In/Out for Country, Phone Number, and OTP inputs */
+body.night-mode input:focus,
+body.night-mode select:focus {
+    border-color: #00bcd4; /* Different border color for focus in night mode */
+}
+
+/* Subtle hover effect */
 input[type="text"]:hover, input[type="tel"]:hover, select:hover {
-    outline: 2px solid #add8e6; /* Light blue outline on hover */
-    box-shadow: 0 0 5px rgba(173, 216, 230, 0.5); /* Light blue shadow on hover */
-    transition: outline 0.3s ease, box-shadow 0.3s ease; /* Subtle fade transition */
+    outline: 2px solid #add8e6;
+    box-shadow: 0 0 5px rgba(173, 216, 230, 0.5); /* Optional: matching shadow color */
+}
+
+body.night-mode input[type="text"]:hover,
+body.night-mode input[type="tel"]:hover,
+body.night-mode select:hover {
+    outline: 2px solid #00bcd4; /* Different outline on hover in night mode */
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.5); /* Light cyan shadow on hover */
 }
 
 /* Button Styling */
 button {
     width: 100%;
     padding: 12px;
-    background-color: #0088cc;
+    background-color: #3C87F7; /* Updated button color for light mode */
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
     font-size: 16px;
     transition: background-color 0.3s ease;
 }
 
+body.night-mode button {
+    background-color: #9275ff; /* Change button color for night mode */
+}
+
 button:hover {
-    background-color: #007bb5;
+    background-color: #007bb5; /* This can remain the same or be updated as needed */
+}
+
+body.night-mode button:hover {
+    background-color: #0097a7; /* Change button hover color for night mode */
 }
 
 button:disabled {
@@ -104,6 +166,8 @@ button:disabled {
 
 /* Feedback and Error Message Styling */
 .success-message, #message {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
     font-size: 14px;
     margin-top: 10px;
     color: green;
@@ -111,13 +175,20 @@ button:disabled {
 
 #error-message {
     color: red;
+    font-family: 'Open Sans', sans-serif;
     font-size: 0.9em;
     margin-top: 5px;
 }
 
-/* Animation class for swipe-left */
+/* Smooth swipe-left animation */
 .swipe-left {
-    transform: translateX(-100%); /* Swipes the container to the left */
+    transform: translateX(-100%);
+    transition: transform 0.5s ease-in-out;
+}
+
+/* Ensuring container transition effects */
+.otp-container.swipe-in {
+    transform: translateX(0);
 }
 
 /* Responsive Styling */
@@ -131,20 +202,18 @@ button:disabled {
         font-size: 14px;
     }
 
-    /* Adjust label styling for mobile view */
     .input-label {
-        font-size: 10px; /* Smaller font size to fit within the input field */
-        top: -10px; /* Slightly adjust to align within the input */
-        left: 10px; /* Adjust padding to fit */
-        padding: 0 3px; /* Smaller padding to fit within outline */
+        font-size: 10px;
+        top: -10px;
+        left: 10px;
+        padding: 0 3px;
     }
 
-    /* Adjust input styling for mobile */
     input[type="text"], input[type="tel"], select {
-        width: 100%; /* Full width for mobile */
-        padding: 8px; /* Adjust padding to fit */
-        font-size: 12px; /* Slightly smaller font */
+        width: 100%;
+        padding: 8px;
+        font-size: 12px;
         box-sizing: border-box;
-        background-color: white; /* Ensure white background on mobile */
+        background-color: white;
     }
 }

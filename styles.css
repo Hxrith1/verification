@@ -2,7 +2,7 @@
 
 /* General Body Styling */
 body {
-    background-color: #f7f7f7;
+    background-color: #f7f7f7; /* Keep this light gray or change it to white */
     font-family: 'Roboto', sans-serif;
     display: flex;
     justify-content: center;
@@ -22,7 +22,7 @@ body.night-mode {
 
 /* Container Styling */
 .login-container, .otp-container {
-    background-color: white;
+    background-color: white; /* Set the background to white */
     border-radius: 10px;
     padding: 30px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -41,9 +41,10 @@ body.night-mode .otp-container {
     margin-bottom: 20px;
 }
 
-/* Ensure specific headings remain black */
+/* Title Styling */
 .title {
     color: black;
+    font-weight: bold; /* Ensures the title is bold */
 }
 
 /* Headings with bold font */
@@ -86,17 +87,17 @@ body.night-mode .input-label {
 }
 
 input[type="text"], input[type="tel"], select {
-    width: 273.33px;
+    width: 100%; /* Make inputs full width */
     height: 50.3px;
     padding: 10px;
-    border: 1px solid #3C87F7; /* Updated border color for light mode */
+    border: 1px solid grey; /* Default border color grey */
     border-radius: 5px;
     font-family: 'Open Sans', sans-serif;
     font-size: 14px;
     box-sizing: border-box;
     background-color: white;
     color: #333;
-    transition: outline 0.3s ease, box-shadow 0.3s ease;
+    transition: border-color 0.3s ease; /* Change outline to border-color transition */
 }
 
 body.night-mode input[type="text"],
@@ -110,25 +111,23 @@ body.night-mode select {
 input:focus, select:focus {
     border-color: #3C87F7; /* Updated focus border color for light mode */
     outline: none;
-    box-shadow: 0 0 5px rgba(60, 135, 247, 0.5); /* Optional: matching shadow color */
 }
 
+/* Night mode focus border color */
 body.night-mode input:focus,
 body.night-mode select:focus {
     border-color: #00bcd4; /* Different border color for focus in night mode */
 }
 
-/* Subtle hover effect */
+/* Hover effect for inputs */
 input[type="text"]:hover, input[type="tel"]:hover, select:hover {
-    outline: 2px solid #add8e6;
-    box-shadow: 0 0 5px rgba(173, 216, 230, 0.5); /* Optional: matching shadow color */
+    border-color: #3C87F7; /* Blue outline on hover in light mode */
 }
 
 body.night-mode input[type="text"]:hover,
 body.night-mode input[type="tel"]:hover,
 body.night-mode select:hover {
-    outline: 2px solid #00bcd4; /* Different outline on hover in night mode */
-    box-shadow: 0 0 5px rgba(0, 255, 255, 0.5); /* Light cyan shadow on hover */
+    border-color: #9275ff; /* Purple outline on hover in night mode */
 }
 
 /* Button Styling */
@@ -180,6 +179,11 @@ button:disabled {
     margin-top: 5px;
 }
 
+/* Confirmation message styling */
+.confirmation-message {
+    color: #666; /* Grey color for confirmation message */
+}
+
 /* Smooth swipe-left animation */
 .swipe-left {
     transform: translateX(-100%);
@@ -195,6 +199,25 @@ button:disabled {
 .telegram-logo {
     width: 80px; /* Adjust this to match the width of the other logo */
     height: auto; /* Maintain aspect ratio */
+}
+
+/* Remove Telegram-specific background styles */
+.telegram-container {
+    display: none; /* Hide this class if you're not using it */
+}
+
+/* Loading Indicator */
+#loadingIndicator {
+    display: none; /* Initially hide the loading indicator */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000; /* Ensure it appears above other content */
+    background-color: rgba(255, 255, 255, 0.8); /* Light background for contrast */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Responsive Styling */
@@ -224,3 +247,4 @@ button:disabled {
     }
 }
 
+/* Add additional styles as necessary to match Telegram's design */

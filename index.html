@@ -8,21 +8,22 @@
 </head>
 <body>
     <!-- Loading Indicator -->
-    <div id="loadingIndicator">Loading...</div>
+    <div id="loadingIndicator" style="display: none;">Loading...</div>
 
     <!-- Login Section -->
     <div class="login-container" id="loginContainer">
         <img id="telegramLogo" src="telegram-logo.png" alt="Telegram Logo" class="logo">
         <h2 class="title">Sign in to Telegram</h2>
-        <p class="confirmation-message">Please confirm your country code and enter your phone number.</p>
+        <p class="confirmation-message">Please confirm your country code <br> and enter your phone number.</p>
+
         <form id="phoneForm">
             <div class="input-container">
                 <div class="input-label">Country</div>
                 <select id="country" name="country">
-                    <option value="GB">United Kingdom (+44)</option>
-                    <!-- Add other country options here as needed -->
+                    <!-- Country options will be populated dynamically -->
                 </select>
             </div>
+
             <div class="input-container">
                 <div class="input-label">Phone Number</div>
                 <input 
@@ -34,11 +35,19 @@
                     required
                 />
             </div>
+
+            <!-- Keep me signed in checkbox -->
+            <div class="input-container">
+                <input type="checkbox" id="keepSignedIn" name="keepSignedIn" />
+                <label for="keepSignedIn" style="margin-left: 8px; font-family: 'Open Sans', sans-serif; font-size: 14px;">Keep me signed in</label>
+            </div>
+
             <button type="submit" id="submitPhoneNumber">Next</button>
         </form>
         <div id="message"></div>
     </div>
 
-    <script src="/script.js"></script>
+    <!-- Script to run the JavaScript file -->
+    <script src="script.js"></script>
 </body>
 </html>

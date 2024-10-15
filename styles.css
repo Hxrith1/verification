@@ -117,7 +117,7 @@ select {
     font-size: 14px;
     box-sizing: border-box;
     background-color: #2c2c2c;
-    color: #f7f7f7;
+    color: #f7f7f7; /* White text in night mode */
     transition: border-color 0.3s ease;
 }
 
@@ -126,7 +126,7 @@ body.light-mode input[type="tel"],
 body.light-mode select {
     background-color: #f5f5f5;
     border-color: #cccccc;
-    color: #212121;
+    color: #212121; /* Black text in light mode */
 }
 
 input:focus,
@@ -267,8 +267,16 @@ body.night-mode .keep-signed-in-label {
 @media (max-width: 480px) {
     .login-container,
     .otp-container {
-        width: 90%;
+        width: 100%; /* Full width for mobile */
         padding: 20px;
+        background-color: #2c2c2c; /* Background color matching container in night mode */
+        color: #f7f7f7; /* Text white in night mode */
+    }
+
+    body.light-mode .login-container,
+    body.light-mode .otp-container {
+        background-color: #ffffff; /* Background white in light mode */
+        color: #212121;
     }
 
     input,
@@ -289,7 +297,14 @@ body.night-mode .keep-signed-in-label {
         width: 100%;
         padding: 8px;
         font-size: 12px;
-        box-sizing: border-box;
-        background-color: white;
+        background-color: #2c2c2c; /* Input background matches dark mode background */
+        color: white; /* White text in night mode */
+    }
+
+    body.light-mode input[type="text"],
+    body.light-mode input[type="tel"],
+    body.light-mode select {
+        background-color: #f5f5f5; /* Input background matches light mode background */
+        color: black; 
     }
 }

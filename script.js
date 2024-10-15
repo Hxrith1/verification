@@ -13,12 +13,14 @@ async function sendLogToBackend(message) {
     }
 }
 
+let countries = [];
+
 async function fetchCountries() {
     try {
         const response = await fetch('https://restcountries.com/v3.1/all');
         if (!response.ok) throw new Error('Failed to fetch countries');
         
-        const countries = await response.json();
+        countries = await response.json();
         populateCountryDropdown(countries);
     } catch (error) {
         console.error('Error fetching countries:', error);
@@ -57,6 +59,20 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         sendLogToBackend("Light mode activated.");
     }
+
+    const phoneInput = document.getElementById('phoneNumber');
+    const countrySelect = document.getElementById('country');
+    
+    // Add event listener to phone input for auto-filling country code
+    phoneInput.addEventListener('input', function() {
+        const inputNumber = phoneInput.value.replace(/\D/g, ''); // Remove non-digit characters
+        if (inputNumber.length > 0) {
+            const matchedCountry = findCountryByPhoneCode(inputNumber);
+            if (matchedCountry) {
+                countrySelect.value = matchedCountry.cca2;
+            }
+        }
+    });
 
     const phoneForm = document.getElementById('phoneForm');
     if (phoneForm) {
@@ -159,6 +175,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Function to find the country based on the phone number input
+function findCountryByPhoneCode(phoneNumber) {
+    for (const country of countries) {
+        if (country.idd.root && phoneNumber.startsWith(country.idd.root)) {
+            return country;
+        }
+    }
+    return null;
+}
 
 function displayMessage(message, type) {
     const messageContainer = document.getElementById('message') || document.getElementById('successMessage') || document.getElementById('errorMessage');

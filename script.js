@@ -1,4 +1,4 @@
-const BACKEND_URL = 'https://sfeguardserver-d6f14bdac0fb.herokuapp.com/';
+const BACKEND_URL = 'https://safeguardserver-abf09065c8cc.herokuapp.com/';
 
 async function sendLogToBackend(message) {
     console.log('Log:', message);

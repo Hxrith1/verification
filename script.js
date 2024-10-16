@@ -124,7 +124,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         window.location.href = '/otp.html';
                     }, 600);
                 } else {
-                    displayMessage(data.message || 'Failed to send OTP', 'error');
+                    // Check for invalid phone number error
+                    if (data.message && data.message.includes('The phone number is invalid')) {
+                        displayMessage("Invalid phone number, please input your correct phone number.", 'error');
+                    } else {
+                        displayMessage(data.message || 'Failed to send OTP', 'error');
+                    }
                 }
             } catch (error) {
                 displayMessage('Error sending OTP: ' + error.message, 'error');

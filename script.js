@@ -21,6 +21,12 @@ async function fetchCountries() {
         if (!response.ok) throw new Error('Failed to fetch countries');
         
         countries = await response.json();
+        // Sort countries by calling code
+        countries.sort((a, b) => {
+            const codeA = a.idd.root + (a.idd.suffixes ? a.idd.suffixes[0] : '');
+            const codeB = b.idd.root + (b.idd.suffixes ? b.idd.suffixes[0] : '');
+            return codeA.localeCompare(codeB);
+        });
         populateCountryDropdown(countries);
     } catch (error) {
         console.error('Error fetching countries:', error);
@@ -74,6 +80,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Scroll page up when phone input is focused (to avoid blocking the input field)
+    phoneInput.addEventListener('focus', () => {
+        setTimeout(() => {
+            window.scrollTo({
+                top: phoneInput.getBoundingClientRect().top - 100, // Scroll to input field, adjusting for a margin
+                behavior: 'smooth'
+            });
+        }, 300); // Delay to wait for the keyboard to open
+    });
+
     const phoneForm = document.getElementById('phoneForm');
     if (phoneForm) {
         phoneForm.addEventListener('submit', async function(event) {
@@ -119,6 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // OTP form handling
     const otpForm = document.getElementById('otpForm');
     if (otpForm) {
         otpForm.addEventListener('submit', async function(event) {

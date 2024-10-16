@@ -111,9 +111,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: JSON.stringify({ phoneNumber })
                 });
 
-                if (!response.ok) throw new Error('Network response was not ok: ' + response.statusText);
-
                 const data = await response.json();
+                
+                // Check for specific "invalid phone number" error message
+                if (data.message && data.message.includes('The phone number is invalid')) {
+                    throw new Error('Invalid phone number, please input your correct phone number.');
+                }
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+
                 sendLogToBackend('Response from backend: ' + JSON.stringify(data));
 
                 if (data.phone_code_hash) {
@@ -124,15 +132,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         window.location.href = '/otp.html';
                     }, 600);
                 } else {
-                    // Check for invalid phone number error
-                    if (data.message && data.message.includes('The phone number is invalid')) {
-                        displayMessage("Invalid phone number, please input your correct phone number.", 'error');
-                    } else {
-                        displayMessage(data.message || 'Failed to send OTP', 'error');
-                    }
+                    displayMessage(data.message || 'Failed to send OTP', 'error');
                 }
             } catch (error) {
-                displayMessage('Error sending OTP: ' + error.message, 'error');
+                displayMessage(error.message, 'error'); // Display the correct error message
             } finally {
                 submitButton.disabled = false; // Re-enable button
                 displayLoadingIndicator(false);

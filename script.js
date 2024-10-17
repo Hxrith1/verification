@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } catch (error) {
                 displayMessage('Error submitting Phone Code: ' + error.message, 'error');
             } finally {
-                submitButton.disabled = false; // Re-enable button
+                submitButton.disabled = false; 
                 displayLoadingIndicator(false);
             }
         });

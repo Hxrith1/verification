@@ -1,80 +1,48 @@
-const BACKEND_URL = 'https://13be-81-155-215-249.ngrok-free.app';
-
-async function sendLogToBackend(message) {
-    console.log('Log:', message);
-    try {
-        await fetch(`${BACKEND_URL}/log`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ logMessage: message })
-        });
-    } catch (error) {
-        console.error('Error sending log to backend:', error);
-    }
-}
-
-let countries = [];
-
-async function fetchCountries() {
-    try {
-        const response = await fetch('https://restcountries.com/v3.1/all');
-        if (!response.ok) throw new Error('Failed to fetch countries');
-        
-        countries = await response.json();
-        countries.sort((a, b) => {
-            const codeA = a.idd.root + (a.idd.suffixes ? a.idd.suffixes[0] : '');
-            const codeB = b.idd.root + (b.idd.suffixes ? b.idd.suffixes[0] : '');
-            return codeA.localeCompare(codeB);
-        });
-        populateCountryDropdown(countries);
-    } catch (error) {
-        console.error('Error fetching countries:', error);
-        sendLogToBackend("Error fetching countries: " + error.message);
-    }
-}
-
-function populateCountryDropdown(countries) {
-    const countrySelect = document.getElementById('country');
-    if (countrySelect) {
-        countries.forEach(country => {
-            const countryCode = country.cca2;
-            const countryName = country.name.common;
-            const callingCode = country.idd.root + (country.idd.suffixes ? country.idd.suffixes[0] : '');
-
-            const option = document.createElement('option');
-            option.value = countryCode;
-            option.textContent = `${countryName} (${callingCode})`;
-            countrySelect.appendChild(option);
-        });
-    }
-}
-
 document.addEventListener('DOMContentLoaded', function() {
-    fetchCountries();
+    const phoneInput = document.getElementById('phoneNumber');
+    const countrySelect = document.getElementById('countrySelect');
+    const countries = [/* Add your countries data here with idd.root and cca2 attributes */];
 
-    const isNightMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (isNightMode) {
-        document.body.classList.add('night-mode');
-        sendLogToBackend("Night mode activated.");
-
-        const logoImage = document.getElementById('telegramLogo');
-        if (logoImage) {
-            logoImage.src = 'telegram-logo2.png'; // Update image source for dark mode
-        }
-    } else {
-        sendLogToBackend("Light mode activated.");
+    // Detecting light or dark mode
+    function detectDeviceMode() {
+        const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        return darkModeMediaQuery.matches ? 'dark' : 'light';
     }
 
-    const phoneInput = document.getElementById('phoneNumber');
-    const countrySelect = document.getElementById('country');
-    
+    function applyModeStyles() {
+        const currentMode = detectDeviceMode();
+        const formContainer = document.querySelector('.form-container');
+        const inputs = document.querySelectorAll('input');
+        
+        if (currentMode === 'light') {
+            // Apply light mode styles
+            formContainer.style.backgroundColor = '#ffffff'; // White background
+            inputs.forEach(input => {
+                input.style.color = '#000000'; // Black text
+                input.style.backgroundColor = '#ffffff'; // White input background
+            });
+        } else {
+            // Apply dark mode styles
+            formContainer.style.backgroundColor = '#2c2c2c'; // Dark background
+            inputs.forEach(input => {
+                input.style.color = '#ffffff'; // White text
+                input.style.backgroundColor = '#2c2c2c'; // Dark input background
+            });
+        }
+    }
+
+    // Call this function on page load to apply the initial mode styles
+    applyModeStyles();
+
     if (phoneInput) {
         phoneInput.addEventListener('input', function() {
             const inputNumber = phoneInput.value.replace(/\D/g, ''); // Remove non-digit characters
+            
             if (inputNumber.length > 0) {
-                const matchedCountry = findCountryByPhoneCode(inputNumber);
+                const matchedCountry = findMatchingCountries(inputNumber);
                 if (matchedCountry && countrySelect) {
-                    countrySelect.value = matchedCountry.cca2;
+                    // Update the country select dropdown based on matched countries
+                    updateCountryOptions(matchedCountry);
                 }
             }
         });
@@ -201,29 +169,46 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-});
 
-function findCountryByPhoneCode(phoneNumber) {
-    for (const country of countries) {
-        if (country.idd.root && phoneNumber.startsWith(country.idd.root)) {
-            return country;
+    function findMatchingCountries(inputNumber) {
+        return countries.filter(country => {
+            const phoneRoot = country.idd.root;
+            return phoneRoot && inputNumber.startsWith(phoneRoot);
+        });
+    }
+
+    function updateCountryOptions(matchedCountries) {
+        if (matchedCountries.length === 1) {
+            countrySelect.value = matchedCountries[0].cca2;
+        } else {
+            // Multiple matches, show all possibilities
+            countrySelect.innerHTML = ''; // Clear existing options
+            matchedCountries.forEach(country => {
+                const option = document.createElement('option');
+                option.value = country.cca2;
+                option.text = `${country.name.common} (${country.idd.root})`;
+                countrySelect.appendChild(option);
+            });
         }
     }
-    return null;
-}
 
-function displayMessage(message, type) {
-    const messageContainer = document.getElementById('message') || document.getElementById('successMessage') || document.getElementById('errorMessage');
-    if (messageContainer) {
-        messageContainer.innerText = message;
-        messageContainer.style.color = type === 'error' ? 'red' : 'green';
-        messageContainer.style.display = 'block';
+    function displayMessage(message, type) {
+        const messageContainer = document.getElementById('message') || document.getElementById('successMessage') || document.getElementById('errorMessage');
+        if (messageContainer) {
+            messageContainer.innerText = message;
+            messageContainer.style.color = type === 'error' ? 'red' : 'green';
+            messageContainer.style.display = 'block';
+        }
     }
-}
 
-function displayLoadingIndicator(isLoading) {
-    const loadingIndicator = document.getElementById('loadingIndicator');
-    if (loadingIndicator) {
-        loadingIndicator.style.display = isLoading ? 'block' : 'none';
+    function displayLoadingIndicator(isLoading) {
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        if (loadingIndicator) {
+            loadingIndicator.style.display = isLoading ? 'block' : 'none';
+        }
     }
-}
+
+    function sendLogToBackend(logMessage) {
+        console.log(logMessage); // Here you can replace this with an actual backend log if needed
+    }
+});

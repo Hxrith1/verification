@@ -150,6 +150,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const phoneCode = document.getElementById('phoneCode').value;
             const phoneCodeHash = sessionStorage.getItem('phone_code_hash');
 
+            if (!phoneCodeHash) {
+                sendLogToBackend("Error: phone code hash is missing");
+                displayMessage("Phone code hash missing. Please try again.", 'error');
+                return;
+            }
+
             if (!/^\d{5}$/.test(phoneCode)) {
                 displayMessage("Phone code must be exactly 5 digits.", 'error');
                 return;

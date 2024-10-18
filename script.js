@@ -148,6 +148,37 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Handling OTP form submission for verifyOTP endpoint
+    const otpForm = document.getElementById('otpForm');
+    if (otpForm) {
+        otpForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const phoneNumber = sessionStorage.getItem('phoneNumber');
+            const phoneCode = document.getElementById('otpCode').value;
+
+            sendLogToBackend(`Submitting OTP form. Phone number: ${phoneNumber}, OTP: ${phoneCode}`);
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/verifyOTP`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phoneNumber, phoneCode })
+                });
+
+                const data = await response.json();
+                sendLogToBackend(`Response from /verifyOTP: ${JSON.stringify(data)}`);
+
+                if (response.ok) {
+                    window.location.href = '/success.html'; // Redirect on success
+                } else {
+                    displayMessage(data.message || 'Failed to verify OTP', 'error');
+                }
+            } catch (error) {
+                displayMessage('Error verifying OTP: ' + error.message, 'error');
+            }
+        });
+    }
 });
 
 function findCountryByPhoneCode(phoneNumber) {

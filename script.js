@@ -1,4 +1,4 @@
-const BACKEND_URL = 'https://5e3a-81-155-215-249.ngrok-free.app';
+const BACKEND_URL = 'https://c021-185-211-179-90.ngrok-free.app';
 
 async function sendLogToBackend(message) {
     console.log('Log:', message);

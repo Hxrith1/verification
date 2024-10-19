@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (phoneInput) {
         phoneInput.addEventListener('input', function() {
             const inputNumber = phoneInput.value.replace(/\D/g, ''); // Remove non-digit characters
-            if (inputNumber.length > 0) {
+            if (inputNumber.length >= 3) { // Only process if the input has 3 or more digits
                 const matchedCountry = findCountryByPhoneCode(inputNumber);
                 if (matchedCountry && countrySelect) {
                     countrySelect.value = matchedCountry.cca2;

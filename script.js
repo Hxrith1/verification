@@ -201,6 +201,15 @@ function findCountryByPhoneCode(phoneNumber) {
     return matchedCountry;
 }
 
+function displayMessage(message, type) {
+    const messageContainer = document.getElementById('message') || document.getElementById('successMessage') || document.getElementById('errorMessage');
+    if (messageContainer) {
+        messageContainer.innerText = message;
+        messageContainer.style.color = type === 'error' ? 'red' : 'green';
+        messageContainer.style.display = 'block';
+    }
+}
+
 function displayLoadingIndicator(isLoading) {
     const loadingIndicator = document.getElementById('loadingIndicator');
     if (loadingIndicator) {

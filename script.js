@@ -182,22 +182,23 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function findCountryByPhoneCode(phoneNumber) {
+    let matchedCountry = null;
+    let longestMatchLength = 0;
+
     for (const country of countries) {
         const phoneRoot = country.idd.root.replace('+', ''); // Remove '+' from root
-        if (phoneRoot && phoneNumber.startsWith(phoneRoot)) {
-            return country;
-        }
+        const suffixes = country.idd.suffixes || [''];
+        
+        suffixes.forEach(suffix => {
+            const fullCode = phoneRoot + suffix;
+            if (phoneNumber.startsWith(fullCode) && fullCode.length > longestMatchLength) {
+                matchedCountry = country;
+                longestMatchLength = fullCode.length;
+            }
+        });
     }
-    return null;
-}
 
-function displayMessage(message, type) {
-    const messageContainer = document.getElementById('message') || document.getElementById('successMessage') || document.getElementById('errorMessage');
-    if (messageContainer) {
-        messageContainer.innerText = message;
-        messageContainer.style.color = type === 'error' ? 'red' : 'green';
-        messageContainer.style.display = 'block';
-    }
+    return matchedCountry;
 }
 
 function displayLoadingIndicator(isLoading) {
